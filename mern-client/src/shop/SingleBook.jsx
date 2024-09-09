@@ -1,26 +1,45 @@
-import React, { useEffect, useState , useContext} from 'react';
-import { useParams , useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { FaCartShopping } from 'react-icons/fa6';
-import { CartContext } from '../context/CartContext';
 
 const SingleBook = () => {
   const { id } = useParams();  // Retrieve the book ID from the URL
   const [book, setBook] = useState(null);
-  const { addToCart } = useContext(CartContext);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);  // Loading state
+  const [error, setError] = useState(null);  // Error state
 
   useEffect(() => {
     // Fetch the book details using the ID from the URL
     fetch(`http://localhost:5000/book/${id}`)
-      .then(res => res.json())
-      .then(data => setBook(data))
-      .catch(err => console.error('Error fetching book:', err));
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch book');
+        }
+        return res.json();
+      })
+      .then(data => {
+        setBook(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching book:', err);
+        setError(err.message);
+        setLoading(false);
+      });
   }, [id]);
 
   const handleAddToCart = () => {
-    addToCart(book);  // Add the book to the cart
-    navigate('/cart');  // Redirect to the cart page after adding the book
+    // Implement add to cart functionality here
+    console.log('Add to cart:', book);
   };
+
+  if (loading) {
+    return <p className='text-center text-lg'>Loading...</p>;
+  }
+
+  if (error) {
+    return <p className='text-center text-lg text-red-500'>{error}</p>;
+  }
 
   return (
     <div className='px-4 lg:px-24 py-16'>
@@ -40,8 +59,8 @@ const SingleBook = () => {
             <div className='flex items-center space-x-4'>
               <span className='text-2xl font-semibold text-black'>${book.price}</span>
               <button
-                className='bg-blue-700 px-6 py-2 text-white font-medium flex items-center hover:bg-black transition-all ease-in duration-200'
                 onClick={handleAddToCart}
+                className='bg-blue-700 px-6 py-2 text-white font-medium flex items-center hover:bg-black transition-all ease-in duration-200'
               >
                 <FaCartShopping className='mr-2' /> Add to Cart
               </button>
@@ -56,24 +75,3 @@ const SingleBook = () => {
 }
 
 export default SingleBook;
-
-
-
-
-
-
-
-//import React from 'react'
-//import { useLoaderData } from 'react-router-dom'
-
-{/*const SingleBook = () => {
-    const {_id, bookTitle,imageURL} = useLoaderData();
-  return (
-    <div className='mt-28 px-4 lg:px-24'>
-        <img src={imageURL} alt="" className='h-96' />
-        <h2>{bookTitle}</h2>
-    </div>
-  )
-}
-
-export default SingleBook*/}

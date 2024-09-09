@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+
+//import './styles.css';
 
 import { Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import { FaCartShopping } from 'react-icons/fa6';
 
 const BookCards = ({headline, books}) => {
+    console.log(books)
 
   return (
     <div className='my-16 px-4 lg:px-24'>
@@ -40,24 +43,22 @@ const BookCards = ({headline, books}) => {
         className="mySwiper w-full h-full"
       >
         {
-            books.map(book => (
-              <SwiperSlide key={book._id}>
-                  <Link to = {`/book/${book._id}`}>
-                      <div className='relative'>
-                          <img src={book.imageURL} alt="" />
-                          <div className='absolute top-3 right-3 bg-blue-600 hover:bg-black p-2 rounded'>
-                              <FaCartShopping className='w-4 h-4 text-white' />
-                          </div>
-                      </div>
-                      <div>
-                          <div>
-                              <h3>{book.bookTitle}</h3>
-                              <p>{book.authorName}</p>
-                          </div> 
-                      </div>
-                  </Link>
-              </SwiperSlide>
-            ))
+            books.map(book => <SwiperSlide key={book._id}>
+                <Link to = {`/book/${book._id}`}>
+                    <div>
+                        <img src={book.imageURL} alt="" />
+                        <div className='absolute top-3 right-3 bg-blue-600 hover:bg-black p-2 rounded'>
+                            <FaCartShopping className='w-4 h-4 text-white' />
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <h3>{book.bookTitile}</h3>
+                            <p>{book.authorName}</p>
+                        </div> 
+                    </div>
+                </Link>
+            </SwiperSlide>)
         }
       </Swiper>
         </div>
